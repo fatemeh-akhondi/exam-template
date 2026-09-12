@@ -42,5 +42,9 @@ Grafana: `http://IP:3000`
 Prometheus: `http://IP:9090`
 
 ## Challenges
+I was testing with my own Ansible and it worked fine and i pushed.
+then i ran it using requirements.txt and realized the get-url of ansible for grafana key is not working.
+first i paniced:), but then i switched to curl for downloading the key.
 
-I had no special challenges in this scenario.
+Also when pushing i had changed readme through web so i ran into diverged branches problem.
+since i had ran into this before, i fast-forwarded the push and it was fixed.
