@@ -1,32 +1,46 @@
-# Scenario 2 — Ansible
+# Scenario 2
 
+I used Ansible to install Prometheus, Grafana, and node_exporter on the Fanap VM.
 
-## DO NOT CHANGE 
-Do not change the `inventory/` folder structure.
-Put `ansible_user` and `ansible_host` in `inventory/inventory/monitoring.yml`.
+## Architecture
 
-## Option 1 — given VM
-
-Use the **second** SSH target from https://auth.fanap.kubelog.ir
-
-Then run:
-
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-ansible-playbook -i inventory main.yml -b --private-key ~/.ssh/id_ed25519_fanap
+```mermaid
+flowchart LR
+  User([User]) -->|HTTP :3000| Grafana[Grafana]
+  Grafana -->|PromQL :9090| Prometheus[Prometheus]
+  Prometheus -->|scrapes :9100| NodeExporter[node_exporter]
+  Prometheus -->|self-scrapes :9090| Prometheus
 ```
 
-## Option 2 — Vagrant
+## Code
 
-```bash
-vagrant up
+### Playbook & Roles
+
+I have only one role named `monitoring`.
+
+- main.yml: checks the SSH connection and runs the `monitoring` role.
+- install.yml: installs Prometheus, node_exporter, and Grafana.
+- prometheus.yml: adds Prometheus scrape targets for Prometheus and node_exporter.
+- grafana.yml: adds the Prometheus datasource and the CPU and memory dashboard.
+- services.yml: enables and starts Prometheus, node_exporter, and Grafana.
+- handlers/main.yml: restarts Prometheus or Grafana only when their configuration changes.
+
+### Inventory
+
+My inventory contains only the fanap vm.
+
+## Credentials / Login
+
+```text
+# Grafana
+user: admin
+pass: admin
 ```
 
-Set inventory to the Vagrant user and IP (`vagrant` / `192.168.56.10`).
-Keep this `Vagrantfile` in the repo.
+Grafana: `http://IP:3000`
 
-You can also use the Vagrant layout from [ansible_tutorial](https://github.com/fanapcampus/ansible_tutorial).
+Prometheus: `http://IP:9090`
 
-The code must run. I will run what you leave here.
+## Challenges
+
+I had no special challenges in this scenario.

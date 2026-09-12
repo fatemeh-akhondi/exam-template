@@ -19,10 +19,17 @@
     mode: '0755'
 
 - name: Download Grafana repository signing key
-  ansible.builtin.get_url:
-    url: https://apt.grafana.com/gpg.key
-    dest: /etc/apt/keyrings/grafana.asc
-    mode: '0644'
+  ansible.builtin.command:
+    argv:
+      - curl
+      - --fail
+      - --silent
+      - --show-error
+      - --location
+      - --output
+      - /etc/apt/keyrings/grafana.asc
+      - https://apt.grafana.com/gpg.key
+    creates: /etc/apt/keyrings/grafana.asc
 
 - name: Configure Grafana APT repository
   ansible.builtin.apt_repository:
