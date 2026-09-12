@@ -1,11 +1,10 @@
 ---
-- name: Check SSH connection
-  hosts: all
+- name: Verify connectivity
+  hosts: monitoring
   gather_facts: false
   tasks:
-    - name: Test SSH connection
+    - name: Verify SSH connection
       ansible.builtin.ping:
-      run_once: true
       tags:
         - always
 
@@ -13,7 +12,6 @@
   hosts: monitoring
   become: true
   roles:
-    - { role: monitoring, tags: prometheus }
-    ### OR
-    # - { role: prometheus, tags: prometheus }
-    # - { role: grafana, tags: grafana }
+    - role: monitoring
+      tags:
+        - monitoring

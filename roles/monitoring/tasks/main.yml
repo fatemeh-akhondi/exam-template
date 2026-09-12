@@ -1,5 +1,12 @@
 ---
-# Install Monitoring. It must listen .
-# Add Prometheus as a datasource.
-# Add one dashboard with CPU and memory.
-[]
+- name: Install monitoring software
+  ansible.builtin.import_tasks: install.yml
+
+- name: Configure Prometheus
+  ansible.builtin.import_tasks: prometheus.yml
+
+- name: Configure Grafana
+  ansible.builtin.import_tasks: grafana.yml
+
+- name: Enable monitoring services
+  ansible.builtin.import_tasks: services.yml

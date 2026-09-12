@@ -1,0 +1,35 @@
+---
+- name: Create Grafana dashboard directory
+  ansible.builtin.file:
+    path: /var/lib/grafana/dashboards
+    state: directory
+    owner: grafana
+    group: grafana
+    mode: '0755'
+
+- name: Provision Prometheus Grafana datasource
+  ansible.builtin.template:
+    src: grafana-datasource.yml.j2
+    dest: /etc/grafana/provisioning/datasources/prometheus.yml
+    owner: root
+    group: grafana
+    mode: '0640'
+  notify: Restart Grafana
+
+- name: Provision Grafana dashboard provider
+  ansible.builtin.template:
+    src: grafana-dashboard-provider.yml.j2
+    dest: /etc/grafana/provisioning/dashboards/monitoring.yml
+    owner: root
+    group: grafana
+    mode: '0640'
+  notify: Restart Grafana
+
+- name: Install CPU and memory Grafana dashboard
+  ansible.builtin.copy:
+    src: cpu-memory-dashboard.json
+    dest: /var/lib/grafana/dashboards/cpu-memory.json
+    owner: grafana
+    group: grafana
+    mode: '0644'
+  notify: Restart Grafana

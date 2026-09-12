@@ -1,0 +1,40 @@
+---
+- name: Update APT package cache
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Install packages required for the Grafana repository
+  ansible.builtin.apt:
+    name:
+      - ca-certificates
+      - curl
+      - gnupg
+    state: present
+
+- name: Create APT keyring directory
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+
+- name: Download Grafana repository signing key
+  ansible.builtin.get_url:
+    url: https://apt.grafana.com/gpg.key
+    dest: /etc/apt/keyrings/grafana.asc
+    mode: '0644'
+
+- name: Configure Grafana APT repository
+  ansible.builtin.apt_repository:
+    repo: deb [signed-by=/etc/apt/keyrings/grafana.asc] https://apt.grafana.com stable main
+    filename: grafana
+    state: present
+    update_cache: true
+
+- name: Install monitoring packages
+  ansible.builtin.apt:
+    name:
+      - prometheus
+      - prometheus-node-exporter
+      - grafana
+    state: present
