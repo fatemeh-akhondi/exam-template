@@ -27,6 +27,9 @@ then i installed docker compose!
 
 backend-db network was not in the docker compose for backend
 
+also nginx config file had the wrong name and it gave 502
+after inspeccting compose logs and config
+realized i had to change port to 5000 and backend-api to backend
 
 Config I changed (only the changed part):
 
@@ -37,12 +40,16 @@ in docker-compose.yml
       - nginx-backend-net
 
 ```
+
+ngnix/ngnixconf
+```
+set $backend_upstream http://backend:5000;
+```
 /etc/resolved.conf was also changed by system not me:)
 
 Commands I used:
 
-i put both problems and fixed in the first part!
-
+i put all problems and fixes in the first part!
 
 # Extra problems
 docker compose wouldn't install
