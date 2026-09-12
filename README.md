@@ -1,43 +1,46 @@
 # Scenario 2
 
-Draw the **output** system. You can use AI.
-Then explain your code. 
-
-English is better. Persian is OK.
+I used Ansible to install Prometheus, Grafana, and node_exporter on the Fanap VM.
 
 ## Architecture
 
-Replace this picture with your real design.
-
 ```mermaid
 flowchart LR
-  User(["User"]) --> Grafana["Grafana"]
-  Grafana --> Prometheus["Prometheus"]
+  User([User]) -->|HTTP :3000| Grafana[Grafana]
+  Grafana -->|PromQL :9090| Prometheus[Prometheus]
+  Prometheus -->|scrapes :9100| NodeExporter[node_exporter]
+  Prometheus -->|self-scrapes :9090| Prometheus
 ```
 
 ## Code
 
 ### Playbook & Roles
 
-Explain the playbook or roles you have created. 
-For example: 
-+ `package`: Install requirements
+I have only one role named `monitoring`.
+
+- main.yml: checks the SSH connection and runs the `monitoring` role.
+- install.yml: installs Prometheus, node_exporter, and Grafana.
+- prometheus.yml: adds Prometheus scrape targets for Prometheus and node_exporter.
+- grafana.yml: adds the Prometheus datasource and the CPU and memory dashboard.
+- services.yml: enables and starts Prometheus, node_exporter, and Grafana.
+- handlers/main.yml: restarts Prometheus or Grafana only when their configuration changes.
 
 ### Inventory
-Explain your Inventory if needed
+
+My inventory contains only the fanap vm.
 
 ## Credentials / Login
-Add any login or credential data here. For example
-```
+
+```text
 # Grafana
 user: admin
 pass: admin
 ```
 
-# Challenges
+Grafana: `http://IP:3000`
 
-Write one item for each challenge. What broke, and how you fixed it.
-For example: 
+Prometheus: `http://IP:9090`
 
-+ **Internet Connection**: Iran block downloading from dockerhub 
-+ **Access to VM** is not available through my network
+## Challenges
+
+I had no special challenges in this scenario.
