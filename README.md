@@ -13,32 +13,53 @@ English is better. Persian is OK.
 What was wrong:
 
 How I fixed it:
+resolvectl didn't work -> 
+```
+sudo systemctl start systemd-resolved
+```
+couldn't edit /etc/resolved.conf
+```
+chattr -i /run/systemd/resolve/stub-resolv.conf
+```
+restarted resolved again so i would change
+
+then i installed docker compose!
+
+backend-db network was not in the docker compose for backend
+
 
 Config I changed (only the changed part):
 
+in docker-compose.yml
 ```
-# For example
-# Append this line in requirements.txt 
-httpx>=0.27.0,<1
+  networks:
+      - backend-db-net
+      - nginx-backend-net
+
 ```
+/etc/resolved.conf was also changed by system not me:)
 
 Commands I used:
 
-```
-# For example
-ls ~
-df -h 
-```
-
-## Problem 2: (short name)
-
-
+i put both problems and fixed in the first part!
 
 
 # Extra problems
-
-Write side problems here. For example: your laptop, a wrong config change, or internet.
-Write how much time each one took.
+docker compose wouldn't install
+docker compose versions interfered with each other and i had to ask ai what to do
+this was the error
+```
+KeyError: 'ContainerConfig'
+```
+so i did this
+```
+docker compose up -d --build --force-recreate
+docker compose logs --tail=100 backend
+docker-compose stop backend
+docker-compose rm -f backend
+docker-compose up -d --build backend
+docker-compose logs --tail=100 backend
+```
 
 For example:
 + Weak Internet connection (10 min)
